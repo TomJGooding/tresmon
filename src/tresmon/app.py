@@ -73,3 +73,8 @@ class TresmonApp(App):
         memory_usage_history = self.query_one(MemoryUsageHistory)
         used_memory = psutil.virtual_memory().used
         self.call_from_thread(memory_usage_history.update, used_memory)
+
+
+def run() -> None:
+    app = TresmonApp()
+    app.run()

@@ -29,7 +29,7 @@ def format_bytes(bytes: int) -> str:
     size = float(bytes)
     for unit in [" B", "KB", "MB", "GB", "TB", "PB"]:
         size_unit = unit
-        if size < 1024.0:
+        if size < 1024.0 or unit == "PB":
             break
         size /= 1024.0
     return f"{size:3.1f} {size_unit}"

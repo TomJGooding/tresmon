@@ -37,22 +37,21 @@ def format_bytes(bytes: int) -> str:
 
 class MemoryUsageHistory(PlotextPlot):
     data = deque([0.0] * 60, maxlen=60)
-    available_memory = psutil.virtual_memory().available
 
     def on_mount(self) -> None:
+        available_memory = psutil.virtual_memory().available
         self.plt.title("Memory Usage History")
-        self.plt.ylim(0, self.available_memory)
-        self.plt.yticks(
-            ticks=[0, self.available_memory],
-            labels=["0", format_bytes(self.available_memory)],
-        )
         self.plt.xfrequency(0)
-        self.plt.plot(self.data)
+        self.update(0, available_memory)
 
-    def update(self, used_memory: int) -> None:
+    def update(self, used_memory: int, available_memory: int) -> None:
         self.data.append(used_memory)
         self.plt.clear_data()
-        self.plt.ylim(0, self.available_memory)
+        self.plt.ylim(0, available_memory)
+        self.plt.yticks(
+            ticks=[0, available_memory],
+            labels=["0", format_bytes(available_memory)],
+        )
         self.plt.plot(self.data)
         self.refresh()
 
@@ -72,7 +71,10 @@ class TresmonApp(App):
 
         memory_usage_history = self.query_one(MemoryUsageHistory)
         used_memory = psutil.virtual_memory().used
-        self.call_from_thread(memory_usage_history.update, used_memory)
+        available_memory = psutil.virtual_memory().available
+        self.call_from_thread(
+            memory_usage_history.update, used_memory, available_memory
+        )
 
 
 def run() -> None:

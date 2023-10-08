@@ -12,7 +12,7 @@ class CpuUsageHistory(PlotextPlot):
     def on_mount(self) -> None:
         self.plt.title("CPU Usage History")
         self.plt.ylim(0, 100)
-        self.plt.yticks(ticks=[0, 100], labels=["0", f"{100:5}%"])
+        self.plt.yticks(ticks=[0, 100], labels=["0", f"{100:7}%"])
         self.plt.xfrequency(0)
         self.plt.plot(self.data)
 
@@ -32,7 +32,7 @@ def format_bytes(bytes: int) -> str:
         if size < 1024.0 or unit == "PB":
             break
         size /= 1024.0
-    return f"{size:3.1f} {size_unit}"
+    return f"{size:5.1f} {size_unit}"
 
 
 class MemoryUsageHistory(PlotextPlot):
